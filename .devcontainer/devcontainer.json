@@ -1,0 +1,15 @@
+{
+  "name": "Ceph Dev Container",
+  "dockerFile": "Dockerfile",
+  "context": "..",
+  "runArgs": ["--net=host"],
+  "appPort": [8443],
+  "settings": {
+    "terminal.integrated.defaultProfile.linux": "bash"
+  },
+  "postCreateCommand": "go mod tidy",
+  "remoteUser": "root",
+  "mounts": [
+    "source=${localEnv:HOME}/Desktop/workspace/ceph-config, target=/etc/ceph,type=bind"
+  ]
+}
