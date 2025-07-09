@@ -2,9 +2,64 @@ package rados
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/ceph/go-ceph/rados"
 )
+
+var (
+	instance *rados.Conn
+	once     sync.Once
+	mu       sync.Mutex
+)
+
+func GetConnection() (*rados.Conn, error) {
+	var initError error
+
+	once.Do(func() {
+		conn, err := rados.NewConn()
+		if err != nil {
+			initError = err
+			return
+		}
+
+		err = conn.ReadDefaultConfigFile()
+		if err != nil {
+			conn.Shutdown()
+			initError = err
+			return
+		}
+
+		err = conn.Connect()
+		if err != nil {
+			conn.Shutdown()
+			initError = err
+			return
+		}
+
+		instance = conn
+	})
+
+	if initError != nil {
+		return nil, initError
+	}
+
+	return instance, nil
+}
+
+// CloseConnection 연결 종료 (프로그램 종료 시)
+func CloseConnection() {
+	mu.Lock()
+	defer mu.Unlock()
+
+	if instance != nil {
+		instance.Shutdown()
+		instance = nil
+	}
+
+	// 재초기화를 위해 once 리셋 (테스트 환경 등에서 유용)
+	once = sync.Once{}
+}
 
 type CephConnection struct {
 	conn *rados.Conn
