@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.24.4
 
 require (
-	github.com/ceph/go-ceph v0.34.0
+	github.com/ceph/go-ceph v0.30.0
 	github.com/gin-gonic/gin v1.10.1
 	go.uber.org/zap v1.27.0
 )

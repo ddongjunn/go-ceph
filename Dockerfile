@@ -1,29 +1,27 @@
 # 빌드 단계
-FROM golang:1.24-alpine AS builder
+FROM --platform=linux/amd64 golang:1.24-bookworm AS builder
 WORKDIR /app
+LABEL ceph="true"
 
-# 의존성 복사 및 다운로드
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  librados-dev \
+  librbd-dev \
+  ceph-common \
+  && rm -rf /var/lib/apt/lists/*
+
 COPY go.mod go.sum ./
 RUN go mod download
 
-# 소스 코드 복사
 COPY . .
 
-# 빌드
-RUN CGO_ENABLED=1 GOOS=linux go build -o ceph-core-api ./cmd/api
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags no_encryption -o ceph-core-api ./cmd/api
 
 # 실행 단계
-FROM alpine:latest
+FROM --platform=linux/amd64 debian:bookworm-slim
 WORKDIR /app
-
-# Ceph 라이브러리 설치
-RUN apk add --no-cache librados ceph-common
-
-# 빌드된 바이너리 복사
+RUN apt-get update && apt-get install -y librados2 ceph-common && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/ceph-core-api .
 
-# 포트 노출
 EXPOSE 9080
-
-# 실행
-CMD ["ls -al", "./ceph-core-api"]
+CMD ["./ceph-core-api"]
