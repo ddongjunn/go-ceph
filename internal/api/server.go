@@ -1,9 +1,8 @@
 package api
 
 import (
+	"ceph-core-api/internal/api/config"
 	"github.com/gin-gonic/gin"
-
-	"ceph-core-api/internal/config"
 )
 
 // Server HTTP API 서버
