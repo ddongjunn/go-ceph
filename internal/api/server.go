@@ -1,18 +1,19 @@
 package api
 
 import (
-	"ceph-core-api/internal/api/config"
+	config2 "ceph-core-api/internal/api/config"
+
 	"github.com/gin-gonic/gin"
 )
 
 // Server HTTP API 서버
 type Server struct {
 	router *gin.Engine
-	config *config.Config
+	config *config2.Config
 }
 
 // NewServer 새로운 API 서버 인스턴스 생성
-func NewServer(cfg *config.Config) *Server {
+func NewServer(cfg *config2.Config) *Server {
 	r := gin.Default()
 
 	server := &Server{

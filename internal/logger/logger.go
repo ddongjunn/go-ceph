@@ -35,3 +35,4 @@ func init() {
 func Infof(format string, args ...interface{})  { Logger.Infof(format, args...) }
 func Errorf(format string, args ...interface{}) { Logger.Errorf(format, args...) }
 func Warnf(format string, args ...interface{})  { Logger.Warnf(format, args...) }
+func Debugf(format string, args ...interface{}) { Logger.Debugf(format, args...) }

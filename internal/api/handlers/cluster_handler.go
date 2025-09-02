@@ -1,25 +1,20 @@
 package handlers
 
 import (
-	"ceph-core-api/internal/core/rados"
+	"ceph-core-api/internal/core/cluster"
 	"ceph-core-api/pkg/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
+
+// 클러스터 서비스 인스턴스 (전역 또는 의존성 주입)
+var clusterService = cluster.NewInfoService()
 
 // GetClusterFSID Ceph 클러스터 FSID 조회 핸들러
 func GetClusterFSID(c *gin.Context) {
-	conn, err := rados.GetConnection()
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, models.Response{
-			Status:  "error",
-			Message: "Ceph 클라이언트 생성 실패",
-			Error:   err.Error(),
-		})
-		return
-	}
-
-	fsid, err := conn.GetFSID()
+	// 서비스 계층 호출
+	fsid, err := clusterService.GetFSID()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, models.Response{
 			Status:  "error",
