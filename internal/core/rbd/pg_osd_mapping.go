@@ -1,7 +1,6 @@
 package rbd
 
 import (
-	"ceph-core-api/internal/logger"
 	"encoding/json"
 	"fmt"
 	"sort"
@@ -45,7 +44,7 @@ func MapUsedObjectsToOSDs(
 
 	objectPrefix := stat.Block_name_prefix
 	objectSize := uint64(1) << stat.Order
-
+	
 	var objectNames []string
 	cfg := rbd.DiffIterateConfig{
 		Offset:      0,
@@ -65,7 +64,7 @@ func MapUsedObjectsToOSDs(
 	}
 
 	if len(objectNames) == 0 {
-		logger.Warnf("사용 중인 객체가 없습니다.")
+		logger.Warn("사용 중인 객체가 없습니다.")
 		return nil, nil
 	}
 
@@ -191,7 +190,7 @@ func MapPGsToOSDs(
 		return nil, fmt.Errorf("객체 순회 오류: %v", err)
 	}
 	if len(objectNames) == 0 {
-		logger.Warnf("분석할 객체가 없습니다.")
+		logger.Warn("분석할 객체가 없습니다.")
 		return nil, nil
 	}
 
@@ -225,7 +224,7 @@ func MapPGsToOSDs(
 	wg.Wait()
 
 	if len(pgSet) == 0 {
-		logger.Warnf("PG 정보가 수집되지 않았습니다.")
+		logger.Warn("PG 정보가 수집되지 않았습니다.")
 		return nil, nil
 	}
 

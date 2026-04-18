@@ -2,8 +2,8 @@
   "name": "Ceph Dev Container",
   "dockerFile": "Dockerfile",
   "context": "..",
-  "runArgs": ["-p", "9080:9080"],
-  "appPort": [9080],
+  "runArgs": ["--net=host"],
+  "appPort": [8443],
   "settings": {
     "terminal.integrated.defaultProfile.linux": "bash"
   },
